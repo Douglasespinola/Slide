@@ -4,17 +4,38 @@ export default class Slide {
   constructor(slide, wrapper) {
     this.slide = document.querySelector(slide);
     this.wrapper = document.querySelector(wrapper);
+    this.dist = {
+      finalPosition: 0,
+      starkX: 0,
+      movement: 0,
+    };
+  }
+
+  moveSlide(distX) {
+    this.dist.movePosition = distX;
+    this.slide.style.transform = `translate3d(${distX}px, 0, 0)`;
+  }
+
+  upDatePosition(clientX) {
+    this.dist.movement = (this.dist.starkX - clientX) * 1.6;
+    return this.dist.finalPosition - this.dist.movement;
   }
 
   onStart(event) {
     event.preventDefault();
+    this.dist.starkX = event.clientX;
+    console.log(this.dist.starkX);
     this.wrapper.addEventListener("mousemove", this.onMove);
   }
 
-  onMove(event) {}
+  onMove(event) {
+    const finalPosition = this.upDatePosition(event.clientX);
+    this.moveSlide(finalPosition);
+  }
 
   onEnd(event) {
     this.wrapper.removeEventListener("mousemove", this.onMove);
+    this.dist.finalPosition = this.dist.movePosition;
   }
 
   addSlideEvents() {
